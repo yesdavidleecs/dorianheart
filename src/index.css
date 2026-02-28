@@ -1,3 +1,16 @@
+/* Global resets and layout – #root and #game fill viewport for React app */
+:root {
+  --cream: #FDF6EE;
+  --warm-black: #2C2421;
+  --soft-pink: #E8B4B8;
+  --dusty-rose: #C4898E;
+  --warm-gold: #D4A574;
+  --pale-blush: #F5E6E0;
+  --deep-wine: #6B3A3A;
+  --frost: rgba(255, 252, 248, 0.85);
+  --shadow: rgba(44, 36, 33, 0.15);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,11 +18,485 @@
 }
 
 body {
-  font-family: system-ui, sans-serif;
-  min-height: 100vh;
+  font-family: 'Quicksand', sans-serif;
+  background: var(--warm-black);
+  color: var(--warm-black);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
 }
 
 #root,
 #game {
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== TITLE SCREEN ===== */
+#title-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a1216 0%, #2C2421 40%, #3d2b2b 100%);
+  z-index: 100;
+  cursor: pointer;
+  transition: opacity 1s ease;
+}
+
+#title-screen .vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+}
+
+#title-screen .grain,
+.scene-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+.scene-grain {
+  opacity: 0.03;
+  z-index: 1;
+}
+
+.title-photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 15%;
+  border: 3px solid var(--soft-pink);
+  box-shadow: 0 0 60px rgba(232,180,184,0.3), 0 0 120px rgba(232,180,184,0.1);
+  animation: titleFloat 4s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+  filter: saturate(0.9) contrast(1.05) brightness(1.05);
+}
+
+@keyframes titleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.title-text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-top: 40px;
+}
+.title-text h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 3.2rem;
+  color: var(--cream);
+  letter-spacing: 0.15em;
+  animation: titleFade 2s ease-out;
+}
+.title-text .subtitle {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 1rem;
+  color: var(--soft-pink);
+  margin-top: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  animation: titleFade 2s ease-out 0.5s both;
+}
+.title-text .start-hint {
+  font-size: 0.8rem;
+  color: rgba(232,180,184,0.5);
+  margin-top: 50px;
+  letter-spacing: 0.2em;
+  animation: pulse 2s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+@keyframes titleFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ===== GAME SCREEN ===== */
+#game-screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background: var(--warm-black);
+}
+#game-screen.active {
+  display: flex;
+}
+
+.scene-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 1s ease;
+}
+.scene-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(44,36,33,0.3) 0%, rgba(44,36,33,0.1) 30%,
+    rgba(44,36,33,0.1) 50%, rgba(44,36,33,0.6) 85%,
+    rgba(44,36,33,0.85) 100%);
+  pointer-events: none;
+}
+
+/* Character Portrait */
+.character-container {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(75vw, 420px);
+  height: min(60vh, 500px);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+.character-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  transition: all 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.character-portrait.mood-neutral { filter: saturate(0.85) contrast(1.05) brightness(1.0) sepia(0.08); }
+.character-portrait.mood-happy { filter: saturate(1.0) contrast(1.02) brightness(1.1) sepia(0.05) hue-rotate(-5deg); }
+.character-portrait.mood-sad { filter: saturate(0.6) contrast(1.1) brightness(0.85) sepia(0.15); }
+.character-portrait.mood-flustered { filter: saturate(1.1) contrast(1.0) brightness(1.05) sepia(0.05) hue-rotate(-8deg); }
+.character-portrait.mood-serious { filter: saturate(0.7) contrast(1.15) brightness(0.9) sepia(0.1); }
+.character-portrait.mood-angry { filter: saturate(1.2) contrast(1.2) brightness(0.9) hue-rotate(5deg); }
+.character-portrait.entering {
+  animation: charEnter 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+@keyframes charEnter {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.character-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== DIALOGUE BOX ===== */
+.dialogue-area {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0 20px 30px;
+}
+.dialogue-box {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--frost);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 24px 28px 20px;
+  box-shadow: 0 8px 32px var(--shadow), 0 0 0 1px rgba(232,180,184,0.15);
+  cursor: pointer;
+  min-height: 120px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+.dialogue-box:hover {
+  transform: translateY(-1px);
+}
+.speaker-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--dusty-rose);
+  margin-bottom: 8px;
+  letter-spacing: 0.08em;
+}
+.speaker-name.narrator {
+  color: var(--warm-gold);
+  font-style: italic;
+}
+.dialogue-text {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--warm-black);
+  min-height: 2.8em;
+}
+.dialogue-text .cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--dusty-rose);
+  margin-left: 2px;
+  animation: blink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+.click-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+  font-size: 0.65rem;
+  color: var(--soft-pink);
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.click-indicator.visible {
+  opacity: 0.6;
+}
+
+/* ===== CHOICES ===== */
+.choices-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  padding: 0 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.choice-btn {
+  width: min(90%, 500px);
+  padding: 16px 24px;
+  background: var(--frost);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(232,180,184,0.3);
+  border-radius: 12px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--warm-black);
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 16px var(--shadow);
+  transition: all 0.3s ease;
+  animation: choiceFade 0.4s ease-out both;
+}
+.choice-btn:nth-child(2) { animation-delay: 0.1s; }
+.choice-btn:nth-child(3) { animation-delay: 0.2s; }
+@keyframes choiceFade {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.choice-btn:hover {
+  background: rgba(232,180,184,0.2);
+  border-color: var(--soft-pink);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.choice-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== AFFECTION METER ===== */
+.affection-display {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--cream);
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.affection-display.visible {
+  opacity: 1;
+}
+.affection-hearts {
+  display: flex;
+  gap: 3px;
+}
+.heart {
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+.heart.filled {
+  color: var(--soft-pink);
+}
+.heart.empty {
+  color: rgba(255,255,255,0.25);
+}
+.heart.pop {
+  animation: heartPop 0.5s ease;
+}
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+/* ===== SCENE INDICATOR ===== */
+.scene-indicator {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.75rem;
+  color: var(--cream);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ===== SCENE TRANSITION ===== */
+.scene-transition {
+  position: absolute;
+  inset: 0;
+  background: var(--warm-black);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.scene-transition.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.scene-transition .location-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 1.6rem;
+  color: var(--cream);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: locFade 2s ease 0.3s forwards;
+}
+@keyframes locFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  30% { opacity: 1; transform: translateY(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===== ENDING SCREEN ===== */
+#ending-screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a1216 0%, #2C2421 50%, #3d2b2b 100%);
+  z-index: 100;
+  text-align: center;
+  padding: 40px;
+}
+#ending-screen.active {
+  display: flex;
+}
+.ending-type {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--warm-gold);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  animation: titleFade 1s ease-out;
+}
+.ending-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 2.4rem;
+  color: var(--cream);
+  letter-spacing: 0.1em;
+  margin-bottom: 30px;
+  animation: titleFade 1.2s ease-out 0.3s both;
+}
+.ending-text {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  color: rgba(253,246,238,0.7);
+  line-height: 1.8;
+  max-width: 500px;
+  white-space: pre-line;
+  animation: titleFade 1.5s ease-out 0.6s both;
+}
+.restart-btn {
+  margin-top: 50px;
+  padding: 14px 40px;
+  background: transparent;
+  border: 1px solid var(--soft-pink);
+  border-radius: 30px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.85rem;
+  color: var(--soft-pink);
+  cursor: pointer;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+  animation: titleFade 1.5s ease-out 1s both;
+}
+.restart-btn:hover {
+  background: rgba(232,180,184,0.15);
+  transform: translateY(-2px);
+}
+
+/* ===== HEART PARTICLES ===== */
+.heart-particle {
+  position: fixed;
+  font-size: 1.2rem;
+  pointer-events: none;
+  z-index: 60;
+  animation: floatUp 1.5s ease-out forwards;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(0.5); }
+  100% { opacity: 0; transform: translateY(-120px) scale(1.2); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .title-text h1 { font-size: 2.2rem; }
+  .title-photo { width: 150px; height: 150px; }
+  .character-container { width: 85vw; height: 45vh; top: 3%; }
+  .dialogue-box { padding: 18px 20px 16px; min-height: 100px; }
+  .dialogue-text { font-size: 0.88rem; }
+  .choice-btn { padding: 14px 18px; font-size: 0.85rem; }
 }

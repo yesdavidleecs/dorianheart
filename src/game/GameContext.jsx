@@ -2,9 +2,9 @@ import { createContext, useContext, useReducer } from 'react';
 import { useGameData } from '../data/useGameData';
 import { gameReducer, initialState } from './gameReducer';
 
-const GameStateContext = createContext(null);
-const GameDispatchContext = createContext(null);
-const GameDataContext = createContext(null);
+export const GameStateContext = createContext(null);
+export const GameDispatchContext = createContext(null);
+export const GameDataContext = createContext(null);
 
 export function GameProvider({ children }) {
   const gameData = useGameData();

@@ -5,7 +5,8 @@ test('App renders without crashing', () => {
   render(<App />);
 });
 
-test('App contains FMV Dating Sim', () => {
+test('App shows title screen with game title from data', () => {
   render(<App />);
-  expect(screen.getByText('FMV Dating Sim')).toBeInTheDocument();
+  expect(screen.getByText('Share House')).toBeInTheDocument();
+  expect(screen.getByText('click anywhere to begin')).toBeInTheDocument();
 });

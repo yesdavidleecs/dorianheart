@@ -27,6 +27,9 @@ export const devGameData = {
   scenes: {
     '1_arrival': {
       background: 'default',
+      chapter: 'Act 1',
+      location: 'Share House',
+      character: { id: 'yena', mood: 'neutral' },
       dialogue: [{ speaker: 'narrator', text: 'You arrive at the share house.' }],
       next: 'ending_bad',
     },
