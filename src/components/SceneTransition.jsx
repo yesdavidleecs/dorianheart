@@ -5,7 +5,8 @@
 export default function SceneTransition({ active, locationText }) {
   return (
     <div className={`scene-transition ${active ? 'active' : ''}`} id="scene-transition">
-      <div className="location-text" id="location-text">
+      {/* key forces remount so the locFade animation runs each time we show a new location */}
+      <div key={active ? locationText ?? 'loc' : 'hidden'} className="location-text" id="location-text">
         {locationText ?? ''}
       </div>
     </div>

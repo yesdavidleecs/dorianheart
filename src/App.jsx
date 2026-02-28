@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { GameProvider, useGameState, useGameDispatch, useGameDataContext } from './game/GameContext';
 import TitleScreen from './screens/TitleScreen';
 import GameScreen from './screens/GameScreen';
+import EndingScreen from './screens/EndingScreen';
 
 function GameContent() {
   const state = useGameState();
@@ -14,11 +15,13 @@ function GameContent() {
       e.preventDefault();
       if (state.phase === 'title') {
         dispatch({ type: 'START', payload: { gameData } });
+      } else if (state.phase === 'playing' && !state.showLocationOverlay) {
+        dispatch({ type: 'ADVANCE_DIALOGUE', payload: { gameData } });
       }
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [state.phase, dispatch, gameData]);
+  }, [state.phase, state.showLocationOverlay, dispatch, gameData]);
 
   if (state.phase === 'title') {
     return <TitleScreen />;
@@ -27,11 +30,7 @@ function GameContent() {
     return <GameScreen />;
   }
   if (state.phase === 'ending') {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--cream)' }}>
-        Ending screen (Step 8.)
-      </div>
-    );
+    return <EndingScreen />;
   }
 
   return null;

@@ -107,6 +107,26 @@ describe('gameReducer', () => {
     expect(state.affection).toBe(8);
     expect(state.currentScene).toBe('end_bad');
     expect(state.dialogueIndex).toBe(0);
+    expect(state.spawnHearts).toBe(3);
+  });
+
+  it('CHOOSE sets spawnHearts to 0 when affection delta is 0 or negative', () => {
+    const state = gameReducer(
+      { ...initialState, phase: 'playing' },
+      {
+        type: 'CHOOSE',
+        payload: { choice: { text: 'Bad', affection: -2, next: 'end_bad' }, gameData: mockGameData },
+      }
+    );
+    expect(state.spawnHearts).toBe(0);
+  });
+
+  it('CLEAR_SPAWN_HEARTS resets spawnHearts', () => {
+    const state = gameReducer(
+      { ...initialState, spawnHearts: 3 },
+      { type: 'CLEAR_SPAWN_HEARTS' }
+    );
+    expect(state.spawnHearts).toBe(0);
   });
 
   it('CHOOSE does not allow affection below zero', () => {
@@ -118,6 +138,11 @@ describe('gameReducer', () => {
       }
     );
     expect(state.affection).toBe(0);
+  });
+
+  it('SET_TYPING updates isTyping', () => {
+    expect(gameReducer(initialState, { type: 'SET_TYPING', payload: true }).isTyping).toBe(true);
+    expect(gameReducer({ ...initialState, isTyping: true }, { type: 'SET_TYPING', payload: false }).isTyping).toBe(false);
   });
 
   it('SHOW_ENDING sets phase and ending', () => {

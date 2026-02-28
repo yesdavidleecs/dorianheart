@@ -26,6 +26,8 @@ export const initialState = {
   isTyping: false,
   currentText: '',
   ending: null,
+  spawnHearts: 0,
+  showLocationOverlay: false,
 };
 
 export function gameReducer(state, action) {
@@ -33,11 +35,13 @@ export function gameReducer(state, action) {
     case 'START': {
       const { gameData } = action.payload;
       const startScene = gameData.meta.startScene;
+      const startSceneData = gameData.scenes[startScene];
       return {
         ...state,
         phase: 'playing',
         currentScene: startScene,
         dialogueIndex: 0,
+        showLocationOverlay: !!startSceneData?.location,
       };
     }
 
@@ -50,11 +54,15 @@ export function gameReducer(state, action) {
         ...state,
         currentScene: resolved,
         dialogueIndex: 0,
+        showLocationOverlay: !!scene?.location,
       };
     }
 
     case 'SKIP_TYPING':
       return { ...state, isTyping: false };
+
+    case 'SET_TYPING':
+      return { ...state, isTyping: action.payload };
 
     case 'ADVANCE_DIALOGUE': {
       const { gameData } = action.payload;
@@ -79,7 +87,13 @@ export function gameReducer(state, action) {
       }
       if (scene.next) {
         const resolved = resolveSceneId(scene.next, gameData, state.affection);
-        return { ...state, currentScene: resolved, dialogueIndex: 0 };
+        const nextScene = gameData.scenes[resolved];
+        return {
+          ...state,
+          currentScene: resolved,
+          dialogueIndex: 0,
+          showLocationOverlay: !!nextScene?.location,
+        };
       }
       return state;
     }
@@ -90,14 +104,23 @@ export function gameReducer(state, action) {
       if (affection < 0) affection = 0;
       const nextSceneId = resolveSceneId(choice.next, gameData, affection);
       const scene = gameData.scenes[nextSceneId];
-      if (!scene) return { ...state, affection };
+      const spawnHearts = choice.affection > 0 ? Math.min(choice.affection, 5) : 0;
+      if (!scene) return { ...state, affection, spawnHearts };
       return {
         ...state,
         affection,
         currentScene: nextSceneId,
         dialogueIndex: 0,
+        spawnHearts,
+        showLocationOverlay: !!scene?.location,
       };
     }
+
+    case 'CLEAR_LOCATION_OVERLAY':
+      return { ...state, showLocationOverlay: false };
+
+    case 'CLEAR_SPAWN_HEARTS':
+      return { ...state, spawnHearts: 0 };
 
     case 'SHOW_ENDING':
       return {
