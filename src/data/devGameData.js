@@ -15,7 +15,7 @@ export const devGameData = {
       id: 'yena',
       name: 'Yena',
       titleCharacter: true,
-      images: { default: 'yena.jpeg' },
+      images: { default: '/yena_smile.mp4' },
     },
   },
   backgrounds: {

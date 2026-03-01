@@ -27,4 +27,18 @@ describe('CharacterPortrait', () => {
     const img = container.querySelector('#char-portrait');
     expect(img.className).toContain('mood-neutral');
   });
+
+  it('renders video element with correct attributes when imageSrc is .mp4', () => {
+    const { container } = render(
+      <CharacterPortrait character={{ id: 'yena' }} imageSrc="/yena_smile.mp4" mood="neutral" />
+    );
+    const video = container.querySelector('#char-portrait');
+    expect(video?.tagName).toBe('VIDEO');
+    expect(video).toHaveAttribute('src', '/yena_smile.mp4');
+    expect(video.autoplay).toBe(true);
+    expect(video.muted).toBe(true);
+    expect(video.loop).toBe(true);
+    expect(video.playsInline).toBe(true);
+    expect(video.className).toContain('mood-neutral');
+  });
 });
