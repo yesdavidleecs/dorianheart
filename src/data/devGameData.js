@@ -8,6 +8,7 @@ export const devGameData = {
     startScene: '1_arrival',
     affectionThresholds: { good: 18, neutral: 8 },
     endingScenes: { good: 'ending_good', neutral: 'ending_neutral', bad: 'ending_bad' },
+    twitterUrl: 'https://twitter.com',
   },
   player: { name: 'David' },
   characters: {

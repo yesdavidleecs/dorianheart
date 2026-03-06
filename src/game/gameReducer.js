@@ -32,6 +32,12 @@ export const initialState = {
 
 export function gameReducer(state, action) {
   switch (action.type) {
+    case 'GO_TO_MENU':
+      return { ...state, phase: 'menu' };
+
+    case 'BACK_TO_TITLE':
+      return { ...state, phase: 'title' };
+
     case 'START': {
       const { gameData } = action.payload;
       const startScene = gameData.meta.startScene;

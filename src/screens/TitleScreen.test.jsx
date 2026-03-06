@@ -50,21 +50,21 @@ describe('TitleScreen', () => {
     expect(logo).toHaveAttribute('src', '/customlogo.png');
   });
 
-  it('dispatches START with gameData when clicked', () => {
+  it('dispatches GO_TO_MENU when clicked', () => {
     const { mockDispatch, container } = renderWithMockContext();
     const titleScreen = container.querySelector('#title-screen');
     fireEvent.click(titleScreen);
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
-    expect(mockDispatch).toHaveBeenCalledWith({ type: 'START', payload: { gameData: mockGameData } });
+    expect(mockDispatch).toHaveBeenCalledWith({ type: 'GO_TO_MENU' });
   });
 
-  it('dispatches START when Click to Play button is clicked', () => {
+  it('dispatches GO_TO_MENU when Click to Play button is clicked', () => {
     const { mockDispatch, container } = renderWithMockContext();
     const ctaButton = container.querySelector('.title-cta');
     fireEvent.click(ctaButton);
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
-    expect(mockDispatch).toHaveBeenCalledWith({ type: 'START', payload: { gameData: mockGameData } });
+    expect(mockDispatch).toHaveBeenCalledWith({ type: 'GO_TO_MENU' });
   });
 });

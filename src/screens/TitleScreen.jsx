@@ -5,7 +5,7 @@ export default function TitleScreen() {
   const dispatch = useGameDispatch();
 
   function handleStart() {
-    dispatch({ type: 'START', payload: { gameData } });
+    dispatch({ type: 'GO_TO_MENU' });
   }
 
   const confettiPositions = [

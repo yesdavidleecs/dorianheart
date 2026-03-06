@@ -51,6 +51,19 @@ describe('resolveSceneId', () => {
 });
 
 describe('gameReducer', () => {
+  it('GO_TO_MENU sets phase to menu', () => {
+    const state = gameReducer(initialState, { type: 'GO_TO_MENU' });
+    expect(state.phase).toBe('menu');
+  });
+
+  it('BACK_TO_TITLE sets phase to title', () => {
+    const state = gameReducer(
+      { ...initialState, phase: 'menu' },
+      { type: 'BACK_TO_TITLE' }
+    );
+    expect(state.phase).toBe('title');
+  });
+
   it('START sets phase to playing and loads start scene', () => {
     const state = gameReducer(initialState, {
       type: 'START',
