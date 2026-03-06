@@ -1,10 +1,11 @@
 import { useGameDataContext, useGameDispatch } from '../game/GameContext';
 
-export default function TitleScreen() {
+export default function TitleScreen({ onUserInteraction }) {
   const gameData = useGameDataContext();
   const dispatch = useGameDispatch();
 
   function handleStart() {
+    onUserInteraction?.();
     dispatch({ type: 'GO_TO_MENU' });
   }
 
