@@ -34,7 +34,7 @@ export default function GameScreen() {
   if (!scene) {
     return (
       <div id="game-screen" className="active">
-        <div style={{ color: 'var(--cream)', padding: '2rem' }}>Scene not found.</div>
+        <div style={{ color: 'var(--warm-black)', padding: '2rem' }}>Scene not found.</div>
       </div>
     );
   }
