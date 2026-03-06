@@ -32,7 +32,7 @@ function renderWithMockContext() {
 }
 
 describe('TitleScreen', () => {
-  it('renders title and subtitle from game data', () => {
+  it('renders logo and Click to Play', () => {
     const mockDispatch = vi.fn();
     render(
       <GameDataContext.Provider value={mockGameData}>
@@ -44,32 +44,25 @@ describe('TitleScreen', () => {
       </GameDataContext.Provider>
     );
 
-    expect(screen.getByText('Test Game')).toBeInTheDocument();
-    expect(screen.getByText('A Test Subtitle')).toBeInTheDocument();
-    expect(screen.getByText('click anywhere to begin')).toBeInTheDocument();
-  });
-
-  it('renders title character image with correct src', () => {
-    const mockDispatch = vi.fn();
-    const { container } = render(
-      <GameDataContext.Provider value={mockGameData}>
-        <GameStateContext.Provider value={{ phase: 'title' }}>
-          <GameDispatchContext.Provider value={mockDispatch}>
-            <TitleScreen />
-          </GameDispatchContext.Provider>
-        </GameStateContext.Provider>
-      </GameDataContext.Provider>
-    );
-
-    const img = container.querySelector('.title-photo');
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', 'https://example.com/hero.jpg');
+    expect(screen.getByText('Click to Play')).toBeInTheDocument();
+    const logo = document.querySelector('.title-logo');
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveAttribute('src', '/customlogo.png');
   });
 
   it('dispatches START with gameData when clicked', () => {
     const { mockDispatch, container } = renderWithMockContext();
     const titleScreen = container.querySelector('#title-screen');
     fireEvent.click(titleScreen);
+
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockDispatch).toHaveBeenCalledWith({ type: 'START', payload: { gameData: mockGameData } });
+  });
+
+  it('dispatches START when Click to Play button is clicked', () => {
+    const { mockDispatch, container } = renderWithMockContext();
+    const ctaButton = container.querySelector('.title-cta');
+    fireEvent.click(ctaButton);
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockDispatch).toHaveBeenCalledWith({ type: 'START', payload: { gameData: mockGameData } });
