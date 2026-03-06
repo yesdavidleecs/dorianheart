@@ -16,7 +16,12 @@ export const devGameData = {
       id: 'yena',
       name: 'Yena',
       titleCharacter: true,
-      images: { default: '/yena_smile.mp4' },
+      images: {
+        default: '/KakaoTalk_Photo_2026-02-27-14-48-37%20001.jpeg',
+        neutral: '/KakaoTalk_Photo_2026-02-27-14-48-37%20001.jpeg',
+        happy: '/KakaoTalk_Photo_2026-02-27-14-48-53%20002.jpeg',
+        sad: '/KakaoTalk_Photo_2026-02-27-14-48-55%20003.jpeg',
+      },
     },
   },
   backgrounds: {

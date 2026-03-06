@@ -55,7 +55,8 @@ export default function GameScreen() {
 
   const backgroundValue = scene.background ? (gameData.backgrounds?.[scene.background] ?? '') : '';
   const charData = scene.character ? gameData.characters?.[scene.character.id] : null;
-  const imageSrc = charData ? (charData.images?.[scene.character?.image || 'default'] || charData.images?.default) : '';
+  const imageKey = scene.character?.image ?? scene.character?.mood ?? 'default';
+  const imageSrc = charData ? (charData.images?.[imageKey] || charData.images?.default) : '';
   const titleChar = Object.values(gameData.characters || {}).find((c) => c.titleCharacter);
   const affectionLabel = titleChar?.name ?? '';
   const playerName = gameData.player?.name ?? 'Player';
